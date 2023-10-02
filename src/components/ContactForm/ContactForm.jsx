@@ -7,6 +7,9 @@ import {
   ErrorForm,
   ButtonForm,
 } from './ContactForm.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts } from 'redux/selectors';
+import { addNumber } from 'redux/contactsSlice';
 
 const FormSchema = Yup.object().shape({
   name: Yup.string()
@@ -27,17 +30,28 @@ const FormSchema = Yup.object().shape({
     .required('Required'),
 });
 
-export const ContactForm = ({ onAddContact }) => {
-  const handleSubmit = (values, { resetForm }) => {
-    onAddContact(values);
-    resetForm();
+export const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+
+  const handleSubmitForm = (values, action) => {
+    const isInContacts = contacts.some(
+      ({ name }) => name.toLowerCase() === values.name.toLowerCase()
+    );
+
+    if (isInContacts) {
+      return alert(`${values.name} is already in contacts.`);
+    }
+
+    dispatch(addNumber(values));
+    action.resetForm();
   };
 
   return (
     <Formik
       initialValues={{ name: '', number: '' }}
       validationSchema={FormSchema}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmitForm}
     >
       <StyledForm>
         <h1>Phonebook</h1>
