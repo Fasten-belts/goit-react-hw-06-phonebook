@@ -6,18 +6,12 @@ import {
   ContactNumber,
   DeleteButton,
 } from './ContactList.styled';
-import { getContacts, getFilter } from 'redux/selectors';
+import { selectVisibleContacts } from 'redux/selectors';
 import { delNumber } from 'redux/contactsSlice';
 
 export const ContactList = () => {
-  const contacts = useSelector(getContacts);
-  console.log(contacts);
-  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
-
-  const filteredContacts = contacts?.filter(contact =>
-    contact?.name?.toLowerCase().includes(filter.toLowerCase())
-  );
+  const filteredContacts = useSelector(selectVisibleContacts);
 
   return (
     <ContactListWrapper>
